@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $categories = Category::all();
 
@@ -18,17 +19,17 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('category.category-form', [
             'category' => null
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $input = $request->validate([
-           'name' => 'string|max:255'
+           'name' => 'required|string|max:255|unique:App\Models\Category',
         ]);
 
         Category::create($input);
@@ -36,12 +37,7 @@ class CategoryController extends Controller
         return redirect()->route('category.index');
     }
 
-    /*public function show(string $id)
-    {
-        //
-    }*/
-
-    public function edit(int $id)
+    public function edit(int $id): View
     {
         $category = Category::findOrFail($id);
 
